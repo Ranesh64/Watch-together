@@ -1,50 +1,29 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 import CommentSection from "./CommentSection";
 import { useProfile } from "../utils/useProfile";
+import { getCountFormat, getDateFormat } from "../utils/constants";
+import { useDispatch } from "react-redux";
+import { showDialog } from "../utils/appSlice";
+// import { io } from "socket.io-client";
 
 const VideoDetails = ({ snippet, statistics }) => {
   const { title, channelId, channelTitle, publishedAt } = snippet;
   const { viewCount, likeCount } = statistics;
   const profile = useProfile(channelId);
+  const dispatch = useDispatch();
 
-  const getDateFormat = (time) => {
-    let startDate = new Date(time.toString());
-    let endDate = new Date();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  });
 
-    let timeDiff = endDate.getTime() - startDate.getTime(); //In Milliseconds
-
-    let minutesDiff = timeDiff / (1000 * 60); //In Minutes
-
-    if (minutesDiff >= 1440) {
-      const days = Math.floor(minutesDiff / (60 * 24));
-      if (days >= 365) {
-        return Math.floor(days / 365) + " years";
-      } else if (days >= 30) {
-        return Math.floor(days / 30) + " months";
-      } else {
-        return days + " days";
-      }
-    } else if (minutesDiff >= 60) {
-      return Math.floor(minutesDiff / 60) + " hours";
-    } else {
-      return minutesDiff + " minutes";
-    }
+  const initiateWatchTogether = () => {
+    dispatch(showDialog());
   };
 
-  const getCountFormat = (count) => {
-    if (count >= 1000000) {
-      return (count / 1000000).toFixed(1) + "M";
-    } else if (count >= 1000) {
-      return Math.round(count / 1000) + "k";
-    } else {
-      return count.toString();
-    }
-  };
-  // console.log(statistics);
   return (
     <div className="flex flex-col">
       <h3 className="text-xl font-medium text-white mb-2">{title}</h3>
@@ -66,6 +45,26 @@ const VideoDetails = ({ snippet, statistics }) => {
           </button>
         </div>
         <div className="flex items-center gap-x-2 ">
+          <button
+            className="bg-neutral-800 rounded-full p-1.5 box-border hover:bg-neutral-700"
+            onClick={initiateWatchTogether}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <g id="Group 10">
+                <path
+                  id="Vector"
+                  d="M16.5 13C15.3 13 13.43 13.34 12 14C10.57 13.33 8.7 13 7.5 13C5.33 13 1 14.08 1 16.25V19H23V16.25C23 14.08 18.67 13 16.5 13ZM12.5 17.5H2.5V16.25C2.5 15.71 5.06 14.5 7.5 14.5C9.94 14.5 12.5 15.71 12.5 16.25V17.5ZM21.5 17.5H14V16.25C14 15.79 13.8 15.39 13.48 15.03C14.36 14.73 15.44 14.5 16.5 14.5C18.94 14.5 21.5 15.71 21.5 16.25V17.5ZM7.5 12C9.43 12 11 10.43 11 8.5C11 6.57 9.43 5 7.5 5C5.57 5 4 6.57 4 8.5C4 10.43 5.57 12 7.5 12ZM7.5 6.5C8.6 6.5 9.5 7.4 9.5 8.5C9.5 9.6 8.6 10.5 7.5 10.5C6.4 10.5 5.5 9.6 5.5 8.5C5.5 7.4 6.4 6.5 7.5 6.5ZM16.5 12C18.43 12 20 10.43 20 8.5C20 6.57 18.43 5 16.5 5C14.57 5 13 6.57 13 8.5C13 10.43 14.57 12 16.5 12ZM16.5 6.5C17.6 6.5 18.5 7.4 18.5 8.5C18.5 9.6 17.6 10.5 16.5 10.5C15.4 10.5 14.5 9.6 14.5 8.5C14.5 7.4 15.4 6.5 16.5 6.5Z"
+                  fill="#D9D9D9"
+                />
+              </g>
+            </svg>
+          </button>
           <div className="flex divide-x divide-neutral-600 items-center bg-neutral-800 rounded-full box-border">
             <div className="px-4 py-1.5 hover:bg-neutral-700 hover:rounded-l-full">
               <svg
@@ -160,21 +159,83 @@ const VideoDetails = ({ snippet, statistics }) => {
   );
 };
 
-const VideoPlayer = () => {
+const VideoPlayer = ({ socket }) => {
   const [searchParams] = useSearchParams();
   const { state } = useLocation();
   const { id, snippet, statistics } = state;
+  console.log("VideoPlayer called...");
+  const playerRef = useRef(null);
+  // const chat = useSelector((store) => store.app.showChat);
+  // if (chat) {
+  //   socket = io("http://localhost:8000");
+  // }
+
+  //let socket = chat ? io("http://localhost:8000") : null;
+  const handlePlayerStateChange = useCallback((playerState) => {
+    if (playerRef.current) {
+      if (playerState === window.YT.PlayerState.PLAYING) {
+        playerRef.current.playVideo();
+      } else if (playerState === window.YT.PlayerState.PAUSED) {
+        playerRef.current.pauseVideo();
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName("script")[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      window.onYouTubeIframeAPIReady = () => {
+        if (playerRef.current) {
+          playerRef.current = new window.YT.Player(playerRef.current, {
+            events: {
+              onReady: onPlayerReady,
+              onStateChange: onPlayerStateChange,
+            },
+          });
+        }
+      };
+      socket.on("playerStateChange", handlePlayerStateChange);
+
+      return () => {
+        socket.off("playerStateChange", handlePlayerStateChange);
+      };
+    }
+  }, [socket]);
+
+  const onPlayerReady = () => {
+    if (playerRef.current) {
+      console.log("Player is ready");
+      // playerRef.current.playVideo();
+    }
+  };
+
+  const onPlayerStateChange = (event) => {
+    console.log(`Current time : ${playerRef.current.getCurrentTime()}`);
+    const playerState = event.data;
+    if (socket) {
+      socket.emit("playerStateChange", playerState);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-y-3 w-[1024px]">
       <iframe
         width="1024"
         height="576"
-        src={"https://www.youtube.com/embed/" + searchParams.get("v")}
+        src={
+          "https://www.youtube.com/embed/" +
+          searchParams.get("v") +
+          "?enablejsapi=1"
+        }
         title="David Wiese Scores Crucial 50 | Leicestershire v Yorkshire - Highlights | Vitality Blast 2023"
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
+        ref={playerRef}
       ></iframe>
       <VideoDetails snippet={snippet} statistics={statistics} />
       <CommentSection id={id} />

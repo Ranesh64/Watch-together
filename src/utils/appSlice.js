@@ -4,13 +4,21 @@ const appSlice = createSlice({
   name: "app",
   initialState: {
     isMenuOpen: true,
+    showDialog: false,
+    showChat: false,
   },
   reducers: {
     toggleMenu: (state) => {
       state.isMenuOpen = !state.isMenuOpen;
     },
+    showDialog: (state) => {
+      state.showDialog = !state.showDialog;
+    },
+    showChat: (state) => {
+      state.showChat = !state.showChat;
+    },
   },
 });
 
-export const { toggleMenu } = appSlice.actions;
+export const { toggleMenu, showDialog, showChat } = appSlice.actions;
 export default appSlice.reducer;

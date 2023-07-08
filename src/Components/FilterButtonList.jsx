@@ -22,7 +22,7 @@ const FilterButtonList = () => {
   ];
   return (
     <div className="basis-16 shrink-0">
-      <div className="fixed flex gap-x-3 h-16 items-center bg-body-black flex-nowrap">
+      <div className="fixed flex gap-x-3 h-16 items-center bg-body-black flex-nowrap z-10">
         {filterlist.map((value, index) => {
           return <FilterButton key={index} txt={value} />;
         })}

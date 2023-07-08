@@ -33,7 +33,6 @@ const Comment = ({ data, avatarSize }) => {
   };
 
   const style = avatarSize ? "w-10 h-10 rounded-full" : "h-6 w-6 rounded-full";
-  console.log(style);
   return (
     <div className="mb-5">
       <div className="flex gap-x-3 items-start">

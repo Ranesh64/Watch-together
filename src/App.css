@@ -16,6 +16,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  .active {
+    @apply bg-neutral-800 rounded-md;
+  }
 }
 
 @layer utilities {

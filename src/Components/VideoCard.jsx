@@ -3,60 +3,34 @@
 import { useSelector } from "react-redux";
 import { useProfile } from "../utils/useProfile";
 import { Link } from "react-router-dom";
-
+import {
+  formatDuration,
+  getCountFormat,
+  getDateFormat,
+} from "../utils/constants";
 
 const VideoCard = ({ video }) => {
-  const { snippet, statistics } = video;
+  const { snippet, statistics, contentDetails } = video;
   const { publishedAt, channelId } = snippet;
+  const { duration } = contentDetails;
 
   const menu = useSelector((store) => store.app.isMenuOpen);
   const style = menu ? "w-[360px]" : "w-[338px]";
 
   const profile = useProfile(channelId);
-
-  const getViewCount = (count) => {
-    if (count >= 1000000) {
-      return (count / 1000000).toFixed(1) + "M";
-    } else if (count >= 1000) {
-      return Math.round(count / 1000) + "k";
-    } else {
-      return count.toString();
-    }
-  };
-
-  const getdays = (time) => {
-    let startDate = new Date(time.toString());
-    let endDate = new Date();
-
-    let timeDiff = endDate.getTime() - startDate.getTime(); //In Milliseconds
-
-    let minutesDiff = timeDiff / (1000 * 60); //In Minutes
-
-    if (minutesDiff >= 1440) {
-      const days = Math.floor(minutesDiff / (60 * 24));
-      if (days >= 365) {
-        return Math.floor(days / 365) + " years";
-      } else if (days >= 30) {
-        return Math.floor(days / 30) + " months";
-      } else {
-        return days + " days";
-      }
-    } else if (minutesDiff >= 60) {
-      return Math.floor(minutesDiff / 60) + " hours";
-    } else {
-      return minutesDiff + " minutes";
-    }
-  };
   return (
     <Link to={"/watch?v=" + video.id} state={video}>
       <div className={style}>
         <div className="flex flex-col">
-          <div className="w-full h-52">
+          <div className="w-full h-[202px] relative">
             <img
-              src={snippet?.thumbnails?.medium?.url}
+              src={snippet?.thumbnails?.maxres?.url}
               alt="thumbnail"
               className="w-full h-full rounded-lg"
             />
+            <div className="absolute right-1 bottom-1 text-xs text-[#f1f1f1] bg-body-black px-1 py-0.5 rounded-[0.25rem] font-semibold">
+              {formatDuration(duration)}
+            </div>
           </div>
           <div className="flex gap-2 mt-3">
             <div className="basis-9 shrink-0 h-9">
@@ -67,10 +41,10 @@ const VideoCard = ({ video }) => {
               <p className="text-gray-400 text-sm ">{snippet?.channelTitle}</p>
               <div>
                 <span className="text-gray-400 text-sm after:content-['•'] after:ml-1 after:mr-1">
-                  {getViewCount(statistics?.viewCount)} views
+                  {getCountFormat(statistics?.viewCount)} views
                 </span>
                 <span className="text-gray-400 text-sm">
-                  {getdays(publishedAt)} ago
+                  {getDateFormat(publishedAt)} ago
                 </span>
               </div>
             </div>

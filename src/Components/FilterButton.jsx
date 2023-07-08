@@ -8,7 +8,7 @@ const FilterButton = ({ txt }) => {
     </div>
   ) : (
     <div>
-      <button className="text-sm font-semibold py-1.5 px-3 rounded-lg bg-zinc-800 whitespace-nowrap">
+      <button className="text-sm font-semibold py-1.5 px-3 rounded-lg bg-zinc-800 whitespace-nowrap tracking-wide">
         {txt}
       </button>
     </div>

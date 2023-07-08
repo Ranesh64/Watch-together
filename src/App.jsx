@@ -1,16 +1,17 @@
 import Header from "./Components/header";
-import { Provider } from "react-redux";
-import store from "./utils/store";
 import { Outlet } from "react-router-dom";
+import PopUp from "./Components/PopUp";
+import { useSelector } from "react-redux";
 
 function App() {
+  const dialog = useSelector((store) => store.app.showDialog);
+  console.log(dialog);
   return (
-    <Provider store={store}>
-      <>
-        <Header />
-        <Outlet />
-      </>
-    </Provider>
+    <>
+      {dialog ? <PopUp /> : null}
+      <Header />
+      <Outlet />
+    </>
   );
 }
 

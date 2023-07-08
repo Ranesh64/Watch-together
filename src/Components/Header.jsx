@@ -28,7 +28,7 @@ const Header = () => {
   };
   return (
     <>
-      <header className="px-4 flex justify-between fixed top-0 left-0 right-0 z-50 bg-body-black">
+      <header className="px-4 flex justify-between fixed top-0 left-0 right-0 z-30 bg-body-black">
         <div className="flex items-center">
           <div className="p-2 cursor-pointer" onClick={handleMenuToggle}>
             <svg
@@ -168,7 +168,7 @@ const Header = () => {
         </div>
       </header>
       {showResults && searchSuggestions.length != 0 && (
-        <div className="fixed top-14 left-[446px]  bg-white box-border py-4 w-[35rem] rounded-xl border-gray-100 z-10">
+        <div className="fixed top-14 left-[446px]  bg-white box-border py-4 w-[35rem] rounded-xl border-gray-100 z-20">
           <ul>
             {searchSuggestions.map((result, index) => {
               return (
