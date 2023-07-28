@@ -11,7 +11,7 @@ const RecommendedVideoCard = ({ video }) => {
   const { duration } = contentDetails;
 
   return (
-    <Link to={"/watch?v=" + video.id} state={video}>
+    <Link to={"/watch?v=" + video.id}>
       <div className="flex gap-1.5">
         <div className="w-[168px] h-[94px] shrink-0 relative">
           <img

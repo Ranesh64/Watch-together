@@ -1,11 +1,15 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { useCallback, useEffect, useRef } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import CommentSection from "./CommentSection";
 import { useProfile } from "../utils/useProfile";
-import { getCountFormat, getDateFormat } from "../utils/constants";
+import {
+  VIDEO_BY_ID_URL,
+  getCountFormat,
+  getDateFormat,
+} from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { showDialog } from "../utils/appSlice";
 // import { io } from "socket.io-client";
@@ -161,8 +165,8 @@ const VideoDetails = ({ snippet, statistics }) => {
 
 const VideoPlayer = ({ socket }) => {
   const [searchParams] = useSearchParams();
-  const { state } = useLocation();
-  const { id, snippet, statistics } = state;
+  const [videoStats, setVideoStats] = useState(null);
+  const id = searchParams.get("v");
   console.log("VideoPlayer called...");
   const playerRef = useRef(null);
   // const chat = useSelector((store) => store.app.showChat);
@@ -180,6 +184,17 @@ const VideoPlayer = ({ socket }) => {
       }
     }
   }, []);
+
+  const fetchVideoByID = async (id) => {
+    const data = await fetch(VIDEO_BY_ID_URL + id);
+    const json = await data.json();
+    console.log(json.items[0]);
+    setVideoStats(json?.items[0]);
+  };
+
+  useEffect(() => {
+    fetchVideoByID(id);
+  }, [id]);
 
   useEffect(() => {
     if (socket) {
@@ -225,18 +240,19 @@ const VideoPlayer = ({ socket }) => {
     <div className="flex flex-col gap-y-3">
       <iframe
         className="aspect-video"
-        src={
-          "https://www.youtube.com/embed/" +
-          searchParams.get("v") +
-          "?enablejsapi=1"
-        }
+        src={"https://www.youtube.com/embed/" + id + "?enablejsapi=1"}
         title="David Wiese Scores Crucial 50 | Leicestershire v Yorkshire - Highlights | Vitality Blast 2023"
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
         ref={playerRef}
       ></iframe>
-      <VideoDetails snippet={snippet} statistics={statistics} />
+      {!videoStats ? null : (
+        <VideoDetails
+          snippet={videoStats?.snippet}
+          statistics={videoStats?.statistics}
+        />
+      )}
       <CommentSection id={id} />
     </div>
   );

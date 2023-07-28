@@ -19,7 +19,7 @@ const VideoCard = ({ video }) => {
 
   const profile = useProfile(channelId);
   return (
-    <Link to={"/watch?v=" + video.id} state={video}>
+    <Link to={"/watch?v=" + video.id}>
       <div className="w-[360px] 2xl:w-[338px]">
         <div className="flex flex-col">
           <div className="aspect-video relative">
