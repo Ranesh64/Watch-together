@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { YOUTUBE_VIDEO_URL } from "./constants";
 
-export const fetchData = createAsyncThunk("video/fetch", async () => {
+export const fetchData = createAsyncThunk("videoList/fetch", async () => {
   const data = await fetch(YOUTUBE_VIDEO_URL);
   const videos = await data.json();
   return videos;
 });
 
-const videoSlice = createSlice({
-  name: "video",
+const videoListSlice = createSlice({
+  name: "videoList",
   initialState: {
     loading: false,
     error: null,
@@ -31,4 +31,4 @@ const videoSlice = createSlice({
   },
 });
 
-export default videoSlice.reducer;
+export default videoListSlice.reducer;

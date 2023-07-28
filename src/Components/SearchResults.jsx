@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
 import {
+  VIDEO_BY_ID_URL,
   formatDuration,
   getCountFormat,
   getDateFormat,
 } from "../utils/constants";
 
 import { useEffect, useState } from "react";
-import { SEARCH_BY_QUERY_URL, VIDEO_BY_ID_URL } from "../utils/constants";
+import { SEARCH_BY_QUERY_URL } from "../utils/constants";
 import { useSearchParams } from "react-router-dom";
 import { useProfile } from "../utils/useProfile";
 
@@ -23,17 +24,18 @@ const SearchCard = ({ result }) => {
   } = snippet;
   const profile = useProfile(channelId);
 
-  const fetchVideoStats = async () => {
-    const data = await fetch(VIDEO_BY_ID_URL + id?.videoId);
+  const fetchVideoByID = async (id) => {
+    const data = await fetch(VIDEO_BY_ID_URL + id);
     const json = await data.json();
-    console.log(json?.items);
+    console.log(json.items[0]);
     setVideoStats(json?.items[0]);
   };
 
   useEffect(() => {
-    fetchVideoStats();
+    fetchVideoByID(id.videoId);
   }, []);
 
+  console.log(videoStats);
   return (
     <div className="flex gap-x-4">
       <div className="w-[360px] h-52 relative">

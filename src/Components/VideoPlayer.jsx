@@ -222,10 +222,9 @@ const VideoPlayer = ({ socket }) => {
   };
 
   return (
-    <div className="flex flex-col gap-y-3 w-[1024px]">
+    <div className="flex flex-col gap-y-3">
       <iframe
-        width="1024"
-        height="576"
+        className="aspect-video"
         src={
           "https://www.youtube.com/embed/" +
           searchParams.get("v") +

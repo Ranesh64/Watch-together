@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchData } from "../utils/videoSlice";
+import { fetchData } from "../utils/videoListSlice";
 import RecommendedVideoCard from "./RecommendedVideoCard";
 import FilterButton from "./FilterButton";
 
 const RecommendedVideos = () => {
   const dispatch = useDispatch();
-  const videos = useSelector((store) => store.video.data);
+  const videos = useSelector((store) => store.videoList.data);
   const filters = ["All", "Related", "Computer science", "Vlogs", "Fashion"];
 
   useEffect(() => {

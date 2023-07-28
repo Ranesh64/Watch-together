@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 // eslint-disable-next-line react/prop-types
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
 import { useProfile } from "../utils/useProfile";
 import { Link } from "react-router-dom";
 import {
@@ -14,15 +14,15 @@ const VideoCard = ({ video }) => {
   const { publishedAt, channelId } = snippet;
   const { duration } = contentDetails;
 
-  const menu = useSelector((store) => store.app.isMenuOpen);
-  const style = menu ? "w-[360px]" : "w-[338px]";
+  //const menu = useSelector((store) => store.app.isMenuOpen);
+  //const style = menu ? "w-[360px]" : "w-[338px]";
 
   const profile = useProfile(channelId);
   return (
     <Link to={"/watch?v=" + video.id} state={video}>
-      <div className={style}>
+      <div className="w-[360px] 2xl:w-[338px]">
         <div className="flex flex-col">
-          <div className="w-full h-[202px] relative">
+          <div className="aspect-video relative">
             <img
               src={snippet?.thumbnails?.maxres?.url}
               alt="thumbnail"

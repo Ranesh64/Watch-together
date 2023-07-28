@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import VideoCard from "./VideoCard";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchData } from "../utils/videoSlice";
+import { fetchData } from "../utils/videoListSlice";
 import HomeShimmer from "./HomeShimmer";
 
 const CardContainer = () => {
   const dispatch = useDispatch();
-  const videos = useSelector((store) => store.video.data);
+  const videos = useSelector((store) => store.videoList.data);
 
   useEffect(() => {
     dispatch(fetchData());

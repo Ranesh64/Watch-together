@@ -74,7 +74,7 @@ let peer = null;
 //   );
 // };
 
-const WatchTogether = ({ socket }) => {
+const WatchTogether = ({ socket }) => { //What this function is d
   // const socket = io("http://localhost:8000");
   const [remoteId, setRemoteId] = useState(null);
   const [myStream, setMyStream] = useState(null);
