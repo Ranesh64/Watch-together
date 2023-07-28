@@ -1,14 +1,16 @@
 import { useDispatch } from "react-redux";
 import avatar from "../assets/avatar.png";
 import { toggleMenu } from "../utils/appSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SEARCH_SUGGESTIONS_URL } from "../utils/constants";
 import { Link } from "react-router-dom";
+import SearchSuggestions from "./SearchSuggestions";
 
 const Header = () => {
   const [showResults, setShowResults] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [suggestionList, setSuggestionList] = useState([]);
+  const inputRef = useRef(null);
 
   const dispatch = useDispatch();
 
@@ -20,7 +22,7 @@ const Header = () => {
     const data = await fetch(SEARCH_SUGGESTIONS_URL + searchQuery);
     const json = await data.json();
     console.log(json[1]);
-    setSearchSuggestions(json[1]);
+    setSuggestionList(json[1]);
   };
 
   const handleMenuToggle = () => {
@@ -102,6 +104,7 @@ const Header = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setShowResults(true)}
             onBlur={() => setShowResults(false)}
+            ref={inputRef}
           />
 
           <button className="border border-[#474747] py-3 px-6 rounded-r-full bg-zinc-800 mr-3 border-l-transparent">
@@ -111,7 +114,6 @@ const Header = () => {
               height="18"
               viewBox="0 0 18 18"
               fill="none"
-              
             >
               <path
                 d="M17.87 17.17L12.28 11.58C13.35 10.35 14 8.75 14 7C14 3.13 10.87 0 7 0C3.13 0 0 3.13 0 7C0 10.87 3.13 14 7 14C8.75 14 10.35 13.35 11.58 12.29L17.17 17.88L17.87 17.17ZM7 13C3.69 13 1 10.31 1 7C1 3.69 3.69 1 7 1C10.31 1 13 3.69 13 7C13 10.31 10.31 13 7 13Z"
@@ -168,37 +170,11 @@ const Header = () => {
           </button>
         </div>
       </header>
-      {showResults && searchSuggestions.length != 0 && (
-        <div className="fixed top-14 left-[446px]  bg-white box-border py-4 w-[35rem] rounded-xl border-gray-100 z-20">
-          <ul>
-            {searchSuggestions.map((result, index) => {
-              return (
-                <li
-                  key={index}
-                  className="py-1.5 px-5 flex items-center gap-x-4 hover:bg-neutral-200"
-                >
-                  <div className="">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 18 18"
-                      fill="none"
-                    >
-                      <path
-                        d="M17.87 17.17L12.28 11.58C13.35 10.35 14 8.75 14 7C14 3.13 10.87 0 7 0C3.13 0 0 3.13 0 7C0 10.87 3.13 14 7 14C8.75 14 10.35 13.35 11.58 12.29L17.17 17.88L17.87 17.17ZM7 13C3.69 13 1 10.31 1 7C1 3.69 3.69 1 7 1C10.31 1 13 3.69 13 7C13 10.31 10.31 13 7 13Z"
-                        fill="black"
-                      />
-                    </svg>
-                  </div>
-                  <span className="text-body-black font-semibold text-">
-                    {result}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      {showResults && suggestionList.length != 0 && (
+        <SearchSuggestions
+          suggestionList={suggestionList}
+          inputRef={inputRef}
+        />
       )}
     </>
   );
