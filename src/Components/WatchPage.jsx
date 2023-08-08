@@ -1,11 +1,17 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import RecommendedVideos from "./RecommendedVideos";
 import VideoPlayer from "./VideoPlayer";
 import WatchTogether from "./WatchTogether";
 import { io } from "socket.io-client";
+import { showChat } from "../utils/appSlice";
 // import { Outlet } from "react-router-dom";
 
-const WatchPage = () => {
+// eslint-disable-next-line react/prop-types
+const WatchPage = ({ watchEnable }) => {
+  const dispatch = useDispatch();
+  if (watchEnable) {
+    dispatch(showChat());
+  }
   const chat = useSelector((store) => store.app.showChat);
   const videoPlayerSocket = chat ? io("http://localhost:8000") : null;
   return (

@@ -2,7 +2,7 @@ const Chat = () => {
   return (
     <div className="h-[488px] divide-y divide-neutral-700">
       <div className="mx-4 mt-4 pb-4 h-[408px]">
-        <div className="flex gap-x-3 mb-4">
+        <div className="flex gap-x-3 mb-4"> 
           <div className="w-6 h-6 bg-violet-700 rounded-2xl shrink-0" />
           <div className="flex flex-col">
             <div className="text-stone-300 text-[13px] font-medium">

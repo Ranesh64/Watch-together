@@ -6,11 +6,11 @@ import Body from "./Components/Body.jsx";
 import WatchPage from "./Components/WatchPage.jsx";
 import MainContainer from "./Components/MainContainer.jsx";
 import SearchResults from "./Components/SearchResults.jsx";
-import { Suspense, lazy } from "react";
+// import { Suspense, lazy } from "react";
 import { Provider } from "react-redux";
 import store from "./utils/store.js";
 
-const WatchTogether = lazy(() => import("./Components/WatchTogether.jsx"));
+// const WatchTogether = lazy(() => import("./Components/WatchTogether.jsx"));
 
 const appRouter = createBrowserRouter([
   {
@@ -45,11 +45,7 @@ const appRouter = createBrowserRouter([
   },
   {
     path: "/watchtogether",
-    element: (
-      <Suspense fallback={<h1>Loading...</h1>}>
-        <WatchTogether />
-      </Suspense>
-    ),
+    element: <WatchPage watchEnable={true} />,
   },
 ]);
 
