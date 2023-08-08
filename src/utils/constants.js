@@ -12,7 +12,7 @@ export const CHANNEL_DATA_URL =
   "&id=";
 
 export const SEARCH_SUGGESTIONS_URL =
-  "http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=";
+  "https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=";
 
 export const COMMENTS_URL =
   " https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&maxResults=50&key=" +
