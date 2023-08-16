@@ -1,17 +1,23 @@
 import { useDispatch } from "react-redux";
 import BgImage from "../assets/bgimage.png";
 import { showDialog, showChat } from "../utils/appSlice";
+import { useState } from "react";
 
 const PopUp = () => {
   const dispatch = useDispatch();
+  const [username, setUsername] = useState("");
 
   const closeDialog = () => {
     dispatch(showDialog());
   };
 
   const enableChat = () => {
-    dispatch(showChat());
+    dispatch(showChat(username));
     dispatch(showDialog());
+  };
+
+  const handleChange = (e) => {
+    setUsername(e.target.value);
   };
   return (
     <div className="fixed bg-black bg-opacity-50 top-0 bottom-0 left-0 right-0 z-50">
@@ -33,7 +39,8 @@ const PopUp = () => {
               type="text"
               className="w-[400px] h-14 rounded-lg pl-4 bg-neutral-800 text-neutral-200 placeholder:text-neutral-500 focus:outline-none"
               placeholder="Enter your name"
-              value={"Ranesh suthar"}
+              value={username}
+              onChange={handleChange}
             />
           </div>
           <hr className="border-neutral-700" />

@@ -6,6 +6,7 @@ const appSlice = createSlice({
     isMenuOpen: true,
     showDialog: false,
     showChat: false,
+    username: "",
   },
   reducers: {
     toggleMenu: (state) => {
@@ -14,8 +15,9 @@ const appSlice = createSlice({
     showDialog: (state) => {
       state.showDialog = !state.showDialog;
     },
-    showChat: (state) => {
+    showChat: (state, action) => {
       state.showChat = !state.showChat;
+      state.username = action.payload;
     },
   },
 });

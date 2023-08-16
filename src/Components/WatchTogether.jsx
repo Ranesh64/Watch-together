@@ -1,12 +1,10 @@
 /* eslint-disable react/prop-types */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 // import { io } from "socket.io-client";
 import Chat from "./Chat";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { showChat } from "../utils/appSlice";
 import VideoChat from "./VideoChat";
-
-let peer = null;
 
 // const Player = () => {
 //   const playerRef = useRef(null);
@@ -74,15 +72,10 @@ let peer = null;
 //   );
 // };
 
-const WatchTogether = ({ socket }) => { //What this function is d
+const WatchTogether = ({ socket }) => {
   // const socket = io("http://localhost:8000");
-  const [remoteId, setRemoteId] = useState(null);
-  const [myStream, setMyStream] = useState(null);
   const [activeTab, setActiveTab] = useState("");
-  const [remoteStream, setRemoteStream] = useState(null);
-  const localVideoRef = useRef(null);
-  const remoteVideoRef = useRef(null);
-
+  const userName = useSelector((store) => store.app.username);
   const dispatch = useDispatch();
 
   const endChat = () => {
@@ -90,123 +83,9 @@ const WatchTogether = ({ socket }) => { //What this function is d
     socket.disconnect();
   };
 
-  const handleUserJoined = useCallback((id) => {
-    setRemoteId(id);
-  }, []);
-
-  // eslint-disable-next-line no-unused-vars
-  const initiateCall = useCallback(
-    async (remoteId) => {
-      for (const track of myStream.getTracks()) {
-        peer.addTrack(track, myStream);
-      }
-
-      const localOffer = await peer.createOffer();
-      console.log("Local Offer created", localOffer);
-      await peer.setLocalDescription(localOffer);
-      console.log("Local description set for current peer");
-      socket.emit("outgoing:call", { from: localOffer, to: remoteId });
-    },
-    [myStream]
-  );
-
-  const handleIceCandidate = useCallback(({ candidate }) => {
-    const iceCandidate = new RTCIceCandidate(candidate);
-    peer.addIceCandidate(iceCandidate);
-    console.log("Ice candidate added");
-  }, []);
-
-  const handleIncomingCall = useCallback(async ({ from, offer }) => {
-    console.log("Incoming call");
-    await peer.setRemoteDescription(offer);
-    console.log("Remote descriptin set");
-
-    const incomingStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-    });
-    for (const track of incomingStream.getTracks()) {
-      peer.addTrack(track, incomingStream);
-    }
-    const answerOffer = await peer.createAnswer();
-    console.log("Answer offer created");
-    await peer.setLocalDescription(answerOffer);
-    console.log("Local description set");
-    socket.emit("call:accepted", { answer: answerOffer, to: from });
-  }, []);
-
-  const handleIncomingAns = useCallback(async ({ offer }) => {
-    console.log("handleIncomingAns called");
-    await peer.setRemoteDescription(offer);
-    console.log("Remote descriptin set");
-  }, []);
-
-  const getUserMedia = useCallback(async () => {
-    const userMedia = await navigator.mediaDevices.getUserMedia({
-      video: { width: 360, height: 240 },
-    });
-    setMyStream(userMedia);
-  }, []);
-
   useEffect(() => {
     setActiveTab("chat");
-    peer = new RTCPeerConnection({
-      iceServers: [
-        {
-          urls: "stun:stun.stunprotocol.org",
-        },
-      ],
-    });
-
-    peer.addEventListener("track", (event) => {
-      const stream = event.streams[0];
-      setRemoteStream(stream);
-    });
-
-    peer.addEventListener("icecandidate", async (event) => {
-      console.log("onicecandidate event called");
-      if (event.candidate) {
-        socket.emit("iceCandidate", {
-          candidate: event.candidate,
-          to: remoteId,
-        });
-      }
-    });
-
-    getUserMedia();
-    socket.on("user-joined", handleUserJoined);
-    socket.on("incoming:call", handleIncomingCall);
-    socket.on("iceCandidate", handleIceCandidate);
-    socket.on("incoming:answer", handleIncomingAns);
-
-    return () => {
-      console.log("events destroyed");
-      socket.off("user-joined", handleUserJoined);
-      socket.off("incoming:call", handleIncomingCall);
-      socket.off("iceCandidate", handleIceCandidate);
-      socket.off("incoming:answer", handleIncomingAns);
-    };
-  }, [
-    handleUserJoined,
-    handleIncomingCall,
-    handleIceCandidate,
-    handleIncomingAns,
-    getUserMedia,
-    remoteId,
-  ]);
-
-  useEffect(() => {
-    if (localVideoRef.current) {
-      console.log("ref called", localVideoRef);
-      localVideoRef.current.srcObject = myStream;
-    }
-  }, [myStream]);
-
-  useEffect(() => {
-    if (remoteVideoRef.current) {
-      console.log("ref called", remoteVideoRef);
-      remoteVideoRef.current.srcObject = remoteStream;
-    }
-  }, [remoteStream]);
+  }, []);
 
   return (
     <div className="w-[416px] h-[608px] border border-[#474747] rounded-xl divide-y divide-neutral-700 box-border">
@@ -244,7 +123,13 @@ const WatchTogether = ({ socket }) => { //What this function is d
           </svg>
         </div>
       </div>
-      <div>{activeTab == "chat" ? <Chat /> : <VideoChat />}</div>
+      <div>
+        {activeTab == "chat" ? (
+          <Chat name={userName} socket={socket} />
+        ) : (
+          <VideoChat socket={socket} />
+        )}
+      </div>
       <div className="flex justify-center py-2">
         <button className="py-1 text-sm" onClick={endChat}>
           Leave chat
