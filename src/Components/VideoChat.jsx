@@ -16,7 +16,6 @@ const VideoChat = ({ socket }) => {
     setRemoteId(id);
   }, []);
 
-  // eslint-disable-next-line no-unused-vars
   const initiateCall = useCallback(
     async (remoteId) => {
       for (const track of myStream.getTracks()) {
@@ -63,21 +62,27 @@ const VideoChat = ({ socket }) => {
   }, []);
 
   const toggleVideo = () => {
-    setCamera(!camera);
-    const enabled = localVideoRef.current.srcObject.getVideoTracks()[0].enabled;
-    localVideoRef.current.srcObject.getVideoTracks()[0].enabled = !enabled;
+    const videoTrack = localVideoRef.current.srcObject.getVideoTracks()[0];
+    if (videoTrack) {
+      videoTrack.enabled = !videoTrack.enabled;
+      setCamera(videoTrack.enabled);
+    }
   };
 
   const toggleAudio = () => {
-    setMic(!mic);
-    const enabled = localVideoRef.current.srcObject.getAudioTracks()[0].enabled;
-    localVideoRef.current.srcObject.getAudioTracks()[0].enabled = !enabled;
+    const audioTrack = localVideoRef.current.srcObject.getAudioTracks()[0];
+    if (audioTrack) {
+      audioTrack.enabled = !audioTrack.enabled;
+      setMic(audioTrack.enabled);
+    }
   };
+
   const getUserMedia = useCallback(async () => {
     const userMedia = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
     });
+    console.log(userMedia);
     setMyStream(userMedia);
   }, []);
 
@@ -106,7 +111,7 @@ const VideoChat = ({ socket }) => {
     });
 
     getUserMedia();
-    initiateCall(remoteId);
+
     socket.on("user-joined", handleUserJoined);
     socket.on("incoming:call", handleIncomingCall);
     socket.on("iceCandidate", handleIceCandidate);
@@ -125,14 +130,14 @@ const VideoChat = ({ socket }) => {
     handleIceCandidate,
     handleIncomingAns,
     getUserMedia,
-    remoteId,
+    remoteId
   ]);
 
   useEffect(() => {
     if (localVideoRef.current) {
-      console.log("ref called", localVideoRef);
       localVideoRef.current.srcObject = myStream;
     }
+    console.log("my stream ", myStream);
   }, [myStream]);
 
   useEffect(() => {
@@ -267,6 +272,7 @@ const VideoChat = ({ socket }) => {
               </svg>
             </button>
           )}
+          <button onClick={() => initiateCall(remoteId)}>Call</button>
         </div>
       </div>
     </div>
