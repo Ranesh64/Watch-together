@@ -4,6 +4,7 @@ import VideoPlayer from "./VideoPlayer";
 import WatchTogether from "./WatchTogether";
 import { io } from "socket.io-client";
 import { showChat } from "../utils/appSlice";
+import { SOCKET_SERVER } from "../utils/constants";
 // import { Outlet } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
@@ -13,7 +14,7 @@ const WatchPage = ({ watchEnable }) => {
     dispatch(showChat());
   }
   const chat = useSelector((store) => store.app.showChat);
-  const videoPlayerSocket = chat ? io("http://localhost:8000") : null;
+  const videoPlayerSocket = chat ? io(SOCKET_SERVER) : null;
   return (
     <>
       <div className=" flex mt-20 mx-8 gap-x-6">

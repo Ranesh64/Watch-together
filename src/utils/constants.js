@@ -1,6 +1,7 @@
 import moment from "moment";
 
 //export const API_KEY = "AIzaSyCgVgxyZBE9X-4vlh7uP220wvdmO67ROxU";
+export const SOCKET_SERVER = "https://billowy-habitual-calcium.glitch.me/";
 export const API_KEY = "AIzaSyCwM1vYpUmPxFKz3P8iKgqvvZUR9pIm4U8";
 export const YOUTUBE_VIDEO_URL =
   "https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=48&regionCode=IN&key=" +
