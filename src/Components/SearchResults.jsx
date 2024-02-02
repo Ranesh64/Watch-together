@@ -39,12 +39,15 @@ const SearchCard = ({ result }) => {
   return (
     <div className="flex gap-x-4">
       <div className="w-[360px] h-52 relative">
-        <img
-          src={thumbnails?.medium?.url}
-          alt="thumbnail"
-          className="w-full h-full rounded-lg"
-        />
-        <div className="absolute right-1 bottom-1 text-xs text-[#f1f1f1] bg-body-black px-1 py-0.5 rounded-[0.25rem] font-semibold">
+        <div className="aspect-video">
+          <img
+            src={thumbnails?.high?.url}
+            alt="thumbnail"
+            className="w-full h-full rounded-lg object-cover"
+          />
+        </div>
+
+        <div className="absolute right-1 bottom-2 text-xs text-[#f1f1f1] bg-body-black px-1 py-0.5 rounded-[0.25rem] font-semibold">
           {formatDuration(videoStats?.contentDetails?.duration)}
         </div>
       </div>

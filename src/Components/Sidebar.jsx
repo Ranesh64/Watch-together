@@ -4,7 +4,6 @@ import avatar from "../assets/avatar.png";
 const Sidebar = () => {
   const menu = useSelector((store) => store.app.isMenuOpen);
   console.log(menu);
-  
 
   return menu ? (
     <aside className="basis-60 shrink-0 mt-4">

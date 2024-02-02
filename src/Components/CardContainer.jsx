@@ -19,7 +19,7 @@ const CardContainer = () => {
       <HomeShimmer />
     </div>
   ) : (
-    <div className="flex flex-wrap gap-x-4 gap-y-8 justify-center">
+    <div className="flex flex-wrap gap-x-4 gap-y-8 justify-center ">
       {videos.map((video) => {
         return <VideoCard key={video.id} video={video} />;
       })}

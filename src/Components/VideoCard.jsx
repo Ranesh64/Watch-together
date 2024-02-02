@@ -20,11 +20,15 @@ const VideoCard = ({ video }) => {
   const profile = useProfile(channelId);
   return (
     <Link to={"/watch?v=" + video.id}>
-      <div className="w-[360px] 2xl:w-[338px]">
+      <div className="w-[421px] 2xl:w-[400px]">
         <div className="flex flex-col">
           <div className="aspect-video relative">
             <img
-              src={snippet?.thumbnails?.maxres?.url}
+              src={
+                snippet?.thumbnails?.maxres
+                  ? snippet?.thumbnails?.maxres?.url
+                  : snippet?.thumbnails?.medium?.url
+              }
               alt="thumbnail"
               className="w-full h-full rounded-lg"
             />

@@ -2,12 +2,20 @@
 /* eslint-disable react/prop-types */
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 const SearchSuggestions = ({ suggestionList, inputRef }) => {
+  const navigate = useNavigate();
   const [width, setWidth] = useState(0);
   //   const [topPosition, setTopPosition] = useState(0);
   const [leftPosition, setLeftPosition] = useState(0);
+
+  const handleClick = (result) => {
+    console.log("HandleClick called");
+    navigate("/results?search_query=" + result);
+    inputRef.current.blur();
+  };
 
   useEffect(() => {
     if (inputRef.current) {
@@ -18,6 +26,7 @@ const SearchSuggestions = ({ suggestionList, inputRef }) => {
       setLeftPosition(inputLeft);
     }
   });
+
   return (
     <div
       className="fixed top-14 bg-neutral-800 box-border py-4 rounded-xl border-gray-100 z-20"
@@ -26,9 +35,11 @@ const SearchSuggestions = ({ suggestionList, inputRef }) => {
       <ul>
         {suggestionList.map((result, index) => {
           return (
+            // <Link to={"/results?search_query=" + result} >
             <li
               key={index}
               className="py-1.5 px-5 flex items-center gap-x-4 hover:bg-neutral-700"
+              onClick={() => handleClick(result)}
             >
               <div className="">
                 <svg
@@ -46,6 +57,7 @@ const SearchSuggestions = ({ suggestionList, inputRef }) => {
               </div>
               <span className="text-white font-semibold text-">{result}</span>
             </li>
+            // </Link>
           );
         })}
       </ul>

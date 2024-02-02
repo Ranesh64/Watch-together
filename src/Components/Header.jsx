@@ -6,7 +6,6 @@ import { SEARCH_SUGGESTIONS_URL } from "../utils/constants";
 import { Link } from "react-router-dom";
 import SearchSuggestions from "./SearchSuggestions";
 
-
 const Header = () => {
   const [showResults, setShowResults] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -172,7 +171,7 @@ const Header = () => {
         </div>
       </header>
       {showResults && suggestionList.length != 0 && (
-        <SearchSuggestions  
+        <SearchSuggestions
           suggestionList={suggestionList}
           inputRef={inputRef}
         />
